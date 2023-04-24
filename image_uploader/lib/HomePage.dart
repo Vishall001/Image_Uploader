@@ -15,6 +15,8 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  bool is_Uploaded = false;
+
   void showAlertDialog(ctx) {
     ScaffoldMessenger.of(ctx).showSnackBar(
         const SnackBar(content: Text('Please select an image first')));
@@ -36,6 +38,9 @@ class _HomePageState extends State<HomePage> {
     Future<void> uploadToCloud(File imageFile) async {
       const url = 'https://codelime.in/api/remind-app-token';
       try {
+        setState(() {
+          is_Uploaded = true;
+        });
         var stream = http.ByteStream(imageFile.openRead());
         stream.cast();
         var length = await imageFile.length();
@@ -54,6 +59,7 @@ class _HomePageState extends State<HomePage> {
           ));
           setState(() {
             file = null;
+            is_Uploaded = false;
           });
         });
       } catch (error) {
@@ -93,10 +99,13 @@ class _HomePageState extends State<HomePage> {
             ),
             TextButton(onPressed: pickImage, child: const Text("Open Gellery")),
             TextButton(
-                onPressed: () => file != null
-                    ? uploadToCloud(file!)
-                    : showAlertDialog(context),
-                child: const Text("Upload to Cloud")),
+              onPressed: () => file != null
+                  ? uploadToCloud(file!)
+                  : showAlertDialog(context),
+              child: is_Uploaded
+                  ? CircularProgressIndicator()
+                  : Text("Upload to Cloud"),
+            ),
           ],
         ),
       ),
