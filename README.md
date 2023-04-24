@@ -1,1 +1,3 @@
-# Image_Uploader A
+# Image_Uploader Application 
+## Where User can upload image from device to cloud.
+ 
